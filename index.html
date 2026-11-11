@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoostClaim (BOOST) — The Staircase Rocket on BNB Chain</title>
+<meta name="description" content="BoostClaim (BOOST): 1,000 shares on BNB Chain. 100 FREE for Agent ID, 100 FREE for verified X, 800 on a price staircase — every 10 shares distributed, the price steps up +10%.">
+<style>
+  :root{ --ink:#0d1440; --panel:rgba(10,16,52,.72); --line:rgba(140,180,255,.35); --txt:#eef2ff; --dim:#a9b8e8;
+    --org:#ff8c42; --org2:#ffb347; --grn:#3ddc84; --red:#ff5d73; --blu:#57b6ff; }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",sans-serif;color:var(--txt);
+    background:linear-gradient(180deg,#070d33 0%,#14205c 34%,#3a2a6e 62%,#8a3b63 84%,#e0653a 100%);min-height:100vh}
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .wrap{position:relative;z-index:1;max-width:1020px;margin:0 auto;padding:18px 14px 60px}
+  header{text-align:center;padding:26px 0 4px}
+  .badge{display:inline-block;padding:4px 14px;border:1px solid var(--line);border-radius:999px;background:var(--panel);
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+  .badge .dot{color:var(--grn)}
+  h1{font-size:clamp(44px,9vw,84px);margin:10px 0 2px;letter-spacing:.02em;font-weight:900;
+    background:linear-gradient(92deg,#fff 20%,var(--org2) 55%,var(--org) 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tag{font-size:clamp(15px,2.6vw,20px);color:#ffe9d6;max-width:760px;margin:6px auto 0;line-height:1.5}
+  .cd{margin-top:12px;font-size:17px;color:#fff;font-variant-numeric:tabular-nums}
+  .rowbtn{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+  /* ------- launch scene ------- */
+  .scene{display:flex;gap:8px;align-items:stretch;margin:26px auto 6px;max-width:860px}
+  .sky{position:relative;flex:1;height:340px;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    background:linear-gradient(180deg,rgba(6,10,40,.55),rgba(20,26,80,.25) 55%,rgba(255,140,66,.20))}
+  .skyline{position:absolute;left:0;right:0;border-top:1px dashed rgba(160,190,255,.30);font-size:11px;color:var(--dim);
+    padding:2px 8px;letter-spacing:.08em}
+  .rocket{position:absolute;left:50%;transform:translateX(-50%);width:92px;transition:bottom 1.2s ease}
+  .flame{transform-origin:50% 0;animation:flick .18s infinite alternate}
+  @keyframes flick{from{transform:scaleY(.82)}to{transform:scaleY(1.18)}}
+  .pad{position:absolute;left:0;right:0;bottom:0;height:26px;background:linear-gradient(180deg,#2a3168,#171d47);
+    border-top:2px solid rgba(255,179,71,.55);text-align:center;font-size:11px;color:var(--dim);padding-top:5px;letter-spacing:.2em}
+  .altbox{width:118px;border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:14px 10px;text-align:center;
+    display:flex;flex-direction:column;justify-content:center;gap:4px}
+  .altbox .big{font-size:30px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+  .altbox .lab{font-size:11px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
+  /* ------- panels ------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:18px 0}
+  .stat{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:12px;text-align:center}
+  .stat .v{font-size:24px;font-weight:800;color:#fff}
+  .stat .l{font-size:11.5px;color:var(--dim);margin-top:3px;letter-spacing:.05em}
+  section.panel{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:18px;margin:16px 0;backdrop-filter:blur(4px)}
+  section.panel h2{margin:0 0 10px;font-size:21px}
+  section.panel p{color:#dbe4ff;line-height:1.55;margin:6px 0}
+  .dim{color:var(--dim)} .ok{color:var(--grn)} .err{color:var(--red)} .msg{font-size:13.5px;min-height:18px}
+  button{background:linear-gradient(180deg,var(--org2),var(--org));border:0;color:#231203;font-weight:800;border-radius:12px;
+    padding:11px 18px;font-size:15px;cursor:pointer}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  button.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  button.blue{background:linear-gradient(180deg,#7cc4ff,#3f8fe0);color:#06233f}
+  input,textarea{background:rgba(5,9,35,.8);border:1px solid var(--line);border-radius:10px;color:var(--txt);
+    padding:10px 12px;font-size:14.5px;width:100%}
+  input.mono, .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;word-break:break-all}
+  .lane{border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;background:rgba(6,10,40,.45)}
+  .lane h3{margin:0 0 6px;font-size:16.5px}
+  .flow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .flow>*{flex:1;min-width:150px}
+  .bar{height:14px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;margin:8px 0}
+  .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--org),#ffd23f);width:0%;transition:width .8s ease}
+  .steps{display:flex;gap:14px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+  .steps div b{display:block;font-size:22px;color:#fff}
+  .steps div span{font-size:12px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{border-bottom:1px solid rgba(140,180,255,.18);padding:7px 6px;text-align:left}
+  a{color:var(--blu)}
+  footer{text-align:center;color:var(--dim);font-size:13px;line-height:1.7;margin-top:26px}
+  .hidden{display:none}
+  @media (max-width:560px){ .altbox{width:92px} .sky{height:280px} .rocket{width:70px} }
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="wrap">
+
+<header>
+  <span class="badge"><span class="dot">●</span> <span id="phaseBadge">LOADING TELEMETRY…</span></span>
+  <h1>🚀 BOOSTCLAIM</h1>
+  <p class="tag">The staircase rocket on BNB Chain. <b>1,000 shares</b> of BOOST — <b>100 FREE</b> for Agent ID holders,
+  <b>100 FREE</b> for verified X accounts, and <b>800</b> on the staircase: every 10 shares distributed,
+  the rocket climbs and the price steps up <b>+10%</b>. Earlier is cheaper. Always.</p>
+  <div class="cd" id="countdown">…</div>
+  <div class="rowbtn">
+    <button class="ghost" onclick="document.getElementById('promptPanel').scrollIntoView({behavior:'smooth'})">📋 Agent prompt ↓</button>
+    <a id="shareTop" target="_blank" rel="noopener"><button>𝕏 Share on X</button></a>
+  </div>
+</header>
+
+<div class="scene">
+  <div class="sky" id="sky">
+    <div class="skyline" style="top:8%">1,000 km · FINAL ORBIT — last share</div>
+    <div class="skyline" style="top:38%">408 km · ISS ALTITUDE</div>
+    <div class="skyline" style="top:68%">100 km · KÁRMÁN LINE — space begins</div>
+    <div class="rocket" id="rocket" style="bottom:9%">
+      <svg viewBox="0 0 100 190" width="100%">
+        <g class="flame"><path d="M50 158 C 40 176, 44 186, 50 190 C 56 186, 60 176, 50 158" fill="#ffb347"/>
+        <path d="M50 162 C 45 174, 47 182, 50 186 C 53 182, 55 174, 50 162" fill="#ff7847"/></g>
+        <path d="M28 128 C 14 148, 12 158, 24 156 L 32 146 Z" fill="#e0653a"/>
+        <path d="M72 128 C 86 148, 88 158, 76 156 L 68 146 Z" fill="#e0653a"/>
+        <path d="M50 6 C 68 26, 74 52, 74 92 L 74 138 C 74 150, 64 156, 50 156 C 36 156, 26 150, 26 138 L 26 92 C 26 52, 32 26, 50 6 Z" fill="#f4f7ff"/>
+        <path d="M50 6 C 68 26, 74 52, 74 92 L 74 104 L 26 104 L 26 92 C 26 52, 32 26, 50 6 Z" fill="#ff8c42"/>
+        <circle cx="50" cy="66" r="13" fill="#57b6ff" stroke="#0d1440" stroke-width="3"/>
+        <text x="50" y="134" text-anchor="middle" font-size="14" font-weight="900" fill="#0d1440">BOOST</text>
+      </svg>
+    </div>
+    <div class="pad">LAUNCH PAD · BNB CHAIN</div>
+  </div>
+  <div class="altbox">
+    <div class="lab">Altitude</div>
+    <div class="big"><span id="altKm">0</span> km</div>
+    <div class="lab">shares out</div>
+    <div class="big" style="font-size:19px"><span id="altOut">0</span> / 1,000</div>
+    <div class="lab" id="liveNote">● connecting…</div>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="stat"><div class="v" id="stReg">–</div><div class="l">WAITLIST REGISTERED</div></div>
+  <div class="stat"><div class="v" id="stAgent">–</div><div class="l">AGENT FREE LEFT / 100</div></div>
+  <div class="stat"><div class="v" id="stX">–</div><div class="l">VERIFIED X FREE LEFT / 100</div></div>
+  <div class="stat"><div class="v" id="stPaid">–</div><div class="l">PAID SOLD / 800</div></div>
+  <div class="stat"><div class="v" id="stRef">–</div><div class="l">REFERRAL SHARES GIVEN</div></div>
+</div>
+
+<section class="panel">
+  <h2>📈 Flight telemetry — the price staircase</h2>
+  <div class="steps">
+    <div><span>Current step</span><b id="tpStep">–</b></div>
+    <div><span>Price now</span><b id="tpPrice">–</b></div>
+    <div><span>Next price</span><b id="tpNext">–</b></div>
+    <div><span>Ceiling</span><b>0.01 BNB</b></div>
+  </div>
+  <div class="bar"><i id="tpBar"></i></div>
+  <p class="dim" id="tpNote">Reading the chain…</p>
+  <p>Base price <b>0.0005 BNB</b>. Every 10 shares distributed — free claims count too — the price rises by
+  <b>0.00005 BNB</b> (+10% of base), up to the <b>0.01 BNB</b> ceiling. Multi-share buys are priced unit by unit
+  along the staircase; any overpayment is refunded in the same transaction.</p>
+</section>
+
+<section class="panel" id="waitlistPanel">
+  <h2>🕑 Waitlist — board 30 minutes early</h2>
+  <p>Agent ID wallets can <b>register for free</b> until boarding opens. Registered wallets enter at
+  <b>19:30 WIB</b>; everyone else waits for the public opening at <b>20:00 WIB</b> (Wed 2026-11-11).
+  Registration closes the moment early boarding starts — after that, the waitlist is history.</p>
+  <div class="flow">
+    <button id="regBtn" class="blue">Register my wallet (free)</button>
+  </div>
+  <div class="msg" id="regMsg"></div>
+  <p class="dim" id="regState">Connect your wallet (panel 1) first, then register. One registration per wallet; Agent ID required.</p>
+</section>
+
+<section class="panel">
+  <h2>1 · Connect wallet</h2>
+  <div class="flow">
+    <button id="connectBtn">Connect wallet</button>
+  </div>
+  <div class="msg" id="walletMsg"></div>
+  <p class="dim">WalletConnect or a browser wallet on BNB Chain (chain 56). Connected: <span class="mono" id="acct">—</span></p>
+  <p class="dim" id="myState"></p>
+</section>
+
+<section class="panel">
+  <h2>2 · Free shares — post on X first, then claim</h2>
+  <p>Both free lanes are <b>share-first</b>: post on X with the official template (it carries this site's link),
+  paste the post link, get a free permit from the gate, then claim. One free share per wallet per lane —
+  one wallet may claim <b>both</b> lanes — and one X account can power only <b>one</b> free claim across both lanes.</p>
+
+  <div class="lane">
+    <h3>Lane A · Agent ID holders — 100 FREE</h3>
+    <p class="dim">Your wallet must hold a SPACE ID Agent ID. The X post may come from any account (no blue check needed).</p>
+    <div class="flow">
+      <a id="shareA" target="_blank" rel="noopener"><button class="ghost">① Post on X</button></a>
+      <input id="tweetA" placeholder="Paste your post link https://x.com/you/status/…">
+    </div>
+    <div class="flow">
+      <button id="permitA" class="blue">② Get permit</button>
+      <button id="claimA" disabled>③ Claim free share</button>
+    </div>
+    <div class="msg" id="msgA"></div>
+  </div>
+
+  <div class="lane">
+    <h3>Lane B · Verified X accounts — 100 FREE</h3>
+    <p class="dim">The X account that posts must be <b>verified (blue check)</b>. No Agent ID needed for the wallet.</p>
+    <div class="flow">
+      <a id="shareB" target="_blank" rel="noopener"><button class="ghost">① Post on X</button></a>
+      <input id="tweetB" placeholder="Paste your post link https://x.com/you/status/…">
+    </div>
+    <div class="flow">
+      <button id="permitB" class="blue">② Get permit</button>
+      <button id="claimB" disabled>③ Claim free share</button>
+    </div>
+    <div class="msg" id="msgB"></div>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>3 · Buy on the staircase</h2>
+  <p>Up to <b>20 shares per transaction</b>, repeatable, no per-wallet limit (while the 800-share paid pool lasts).
+  Every share is 1,000,000 BOOST. The price you pay is the staircase price of each unit at the moment of your buy —
+  the quote below is read live from the contract.</p>
+  <div class="flow">
+    <input id="buyQty" type="number" min="1" max="20" value="1" style="max-width:130px">
+    <input id="buyQuote" readonly value="quote: …">
+    <input id="refIn" placeholder="Referrer address (optional) 0x…">
+  </div>
+  <div class="flow">
+    <button id="buyBtn">Buy shares</button>
+  </div>
+  <div class="msg" id="buyMsg"></div>
+  <h3 style="margin:16px 0 6px">Referral rewards — every 10 referred paid shares earn you 1 free share</h3>
+  <p class="dim">Share your referral link: for every 10 paid shares bought through it, 1 free share is minted to you
+  automatically in the same transaction (drawn from the paid pool).</p>
+  <div class="flow">
+    <input id="myRef" readonly value="—">
+    <button id="copyRef" class="ghost" style="flex:0 0 110px">Copy</button>
+  </div>
+  <p class="dim" id="refStats"></p>
+  <h3 style="margin:14px 0 6px">🏆 Top Referrers</h3>
+  <table><thead><tr><th>Referrer</th><th>Paid shares referred</th><th>Free shares earned</th></tr></thead>
+  <tbody id="refBoard"><tr><td colspan="3" class="dim">No referrals yet — be the first.</td></tr></tbody></table>
+</section>
+
+<section class="panel">
+  <h2>🤖 For AI agents</h2>
+  <p>Agents: read <a href="skill.md">skill.md</a> / <a href="llms.txt">llms.txt</a> first. Summary: <b>register on the
+  waitlist</b> if you hold an Agent ID (free, until 19:30 WIB) to board 30 minutes early; <b>share first, claim second</b> —
+  before any free claim, have your owner post on X with the official template (it carries this site's link), pass the
+  post URL to the permit gate, then call the contract with the permit. Contract address is in the footer.</p>
+</section>
+
+<section class="panel" id="promptPanel">
+  <h2>📋 Copy-paste prompt for your agent</h2>
+  <p>Paste this prompt to your AI agent — it will follow skill.md to register, post and claim:</p>
+  <textarea id="agentPrompt" readonly rows="8">You are claiming free BOOST (BoostClaim) shares on BNB Chain for your owner. SHARE FIRST: before any free claim, your owner must post on X with the official template in skill.md (it carries the site link), then give you the post URL. Read https://boostclaim-bsc.github.io/boostclaim-bsc/skill.md and follow it exactly. If public sale has not opened yet, register the wallet on the waitlist first (register(), Agent ID wallets only, free) — registered wallets board at 19:30 WIB, public sale opens 20:00 WIB, Wed 2026-11-11. Then request a free permit from the gate with the post URL and claim on contract 0xc6D5961Ab6499Ce214f210e29d36C3e04040770e — Agent ID lane 100 free (1 per Agent ID), verified-X lane 100 free. Paid shares climb a staircase: 0.0005 BNB base, +10% of base every 10 shares distributed. Permits are always free; never pay for one.</textarea>
+  <div class="flow">
+    <button class="ghost" id="copyPrompt" style="flex:0 0 150px">Copy prompt</button>
+    <span class="msg" id="msgPrompt"></span>
+  </div>
+</section>
+
+<footer>
+  <div>The BoostClaim contract has no admin functions; 100% of sale proceeds go straight to the treasury wallet in the same transaction. Window: early boarding Wed 2026-11-11 19:30 WIB · public 20:00 WIB · closes Sat 2026-11-14 20:00 WIB — then the sale ends forever.</div>
+  <div>Contract: <a href="https://bscscan.com/address/0xc6D5961Ab6499Ce214f210e29d36C3e04040770e" target="_blank" rel="noopener" class="mono">0xc6D5961Ab6499Ce214f210e29d36C3e04040770e</a> · BNB Chain (56)</div>
+  <div id="jsState">JS loading…</div>
+</footer>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const CONTRACT = "0xc6D5961Ab6499Ce214f210e29d36C3e04040770e";
+const PERMIT_URL = "https://permit-worker.reuniakbarpunk212.workers.dev/boostclaim/permit";
+const WC_PROJECT_ID = "ff5985647ed78916bed0155d2ff84a1c";
+const SITE = "https://boostclaim-bsc.github.io/boostclaim-bsc/";
+const EARLY = 1794400200, START = 1794402000; // saleEnd is read from the chain
+const BASE_WEI = 500000000000000n, STEP_WEI = 50000000000000n, CAP_WEI = 10000000000000000n;
+const SHARE_WEI = 10n ** 24n;
+const RPCS = ["https://bsc-dataseed.binance.org", "https://bsc-dataseed1.binance.org", "https://bsc-dataseed2.binance.org", "https://bsc-dataseed3.binance.org", "https://bsc-rpc.publicnode.com"];
+const SEL = { register: "0x1aa3a008", claimAgent: "0x031aa545", claimX: "0x5459f739", buy: "0x7deb6025",
+  status: "0x200d2ed2", walletInfo: "0x500e68e9", quote: "0xed1bd76c", registered: "0xb2dd5c07",
+  referralUnits: "0xa9ee37ee", referralMinted: "0x762fca5c" };
+
+// ---------- starfield ----------
+(() => {
+  const cv = $("stars"), ctx = cv.getContext("2d");
+  let W, H, stars = [];
+  function size() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  size(); addEventListener("resize", size);
+  for (let i = 0; i < 160; i++) stars.push({ x: Math.random(), y: Math.random(), r: Math.random() * 1.4 + .3, p: Math.random() * 6.28 });
+  (function frame(t) {
+    ctx.clearRect(0, 0, W, H);
+    for (const s of stars) {
+      const a = .35 + .55 * Math.abs(Math.sin(t / 1400 + s.p));
+      ctx.beginPath(); ctx.arc(s.x * W, s.y * H, s.r, 0, 7); ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.fill();
+    }
+    requestAnimationFrame(frame);
+  })(0);
+})();
+
+// ---------- official X template (loose format, 277 weighted chars) ----------
+const TWEET = "I just boosted #BoostClaim 🚀\n\nEvery 10 claims the rocket climbs — price +10% 📈\n\n✅ 100 FREE for Agent ID\n✅ 100 FREE for verified X\n\n🕑 Waitlist open — registered agents board 30 min early (19:30), public 20:00 WIB\n\nGrab your seat before it climbs 👇\n\n" + SITE;
+for (const id of ["shareTop", "shareA", "shareB"]) $(id).href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(TWEET);
+
+// ---------- chain reads ----------
+const pad32 = v => String(v).replace(/^0x/, "").padStart(64, "0");
+const padAddr = a => pad32(a.toLowerCase());
+async function rpcCall(data) {
+  for (const url of RPCS) {
+    try {
+      const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 8000);
+      const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, signal: ctl.signal,
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: CONTRACT, data }, "latest"] }) });
+      clearTimeout(to);
+      const j = await r.json();
+      if (j.result) return j.result;
+    } catch (e) { /* next rpc */ }
+  }
+  return null;
+}
+const word = (hex, i) => BigInt("0x" + hex.slice(2 + i * 64, 2 + (i + 1) * 64));
+const fmtBNB = wei => (Number(wei) / 1e18).toFixed(5).replace(/0$/, "") + " BNB";
+let endTime = 0, lastOut = 0, phase = "pre";
+function phaseOf(nowSec, out) {
+  if (endTime && nowSec >= endTime) return "closed";
+  if (nowSec < EARLY) return "pre";
+  if (nowSec < START) return "early";
+  return "public";
+}
+async function refresh() {
+  const res = await rpcCall(SEL.status);
+  const nowSec = Math.floor(Date.now() / 1000);
+  if (res && res.length >= 2 + 10 * 64) {
+    const out = Number(word(res, 0)), aUsed = Number(word(res, 1)), xUsed = Number(word(res, 2)),
+      paid = Number(word(res, 3)), refM = Number(word(res, 4)), step = Number(word(res, 5)),
+      price = word(res, 6), reg = Number(word(res, 8));
+    endTime = Number(word(res, 7));
+    lastOut = out; phase = phaseOf(nowSec, out);
+    $("phaseBadge").textContent = phase === "pre" ? "WAITLIST OPEN — BOARDING 19:30 WIB"
+      : phase === "early" ? "EARLY BOARDING — WAITLIST ONLY" : phase === "public" ? "PUBLIC SALE LIVE" : "SALE CLOSED";
+    $("altKm").textContent = out.toLocaleString("en-US");
+    $("altOut").textContent = out.toLocaleString("en-US");
+    $("rocket").style.bottom = (9 + (out / 1000) * 70) + "%";
+    $("liveNote").textContent = "● LIVE · " + new Date().toTimeString().slice(0, 8);
+    $("stReg").textContent = reg.toLocaleString("en-US");
+    $("stAgent").textContent = Math.max(0, 100 - aUsed);
+    $("stX").textContent = Math.max(0, 100 - xUsed);
+    $("stPaid").textContent = paid;
+    $("stRef").textContent = refM;
+    const inStep = out % 10, nextPrice = BASE_WEI + STEP_WEI * BigInt(step + 1);
+    $("tpStep").textContent = "#" + step;
+    $("tpPrice").textContent = out >= 1000 ? "—" : fmtBNB(price);
+    $("tpNext").textContent = out >= 1000 ? "—" : fmtBNB(nextPrice > CAP_WEI ? CAP_WEI : nextPrice);
+    $("tpBar").style.width = (inStep * 10) + "%";
+    $("tpNote").textContent = out >= 1000 ? "All 1,000 shares are out — the rocket has arrived."
+      : `${inStep} of 10 shares on this step — ${10 - inStep} more and the price climbs to ${fmtBNB(nextPrice > CAP_WEI ? CAP_WEI : nextPrice)}.`;
+    $("regBtn").disabled = phase !== "pre";
+    if (phase !== "pre") $("regState").textContent = "Registration is closed — boarding has begun.";
+    updateQuote();
+  } else {
+    $("liveNote").textContent = "● reconnecting…";
+  }
+  tick();
+}
+function fmtDur(s) {
+  const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60;
+  return `${d}d ${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
+}
+function tick() {
+  const nowSec = Math.floor(Date.now() / 1000);
+  phase = phaseOf(nowSec, lastOut);
+  if (phase === "pre") $("countdown").textContent = "🕑 Early boarding (waitlist) opens in " + fmtDur(EARLY - nowSec) + " · public 20:00 WIB";
+  else if (phase === "early") $("countdown").textContent = "🚀 Early boarding is LIVE — public sale opens in " + fmtDur(START - nowSec);
+  else if (phase === "public") $("countdown").textContent = endTime ? "⏳ Sale closes in " + fmtDur(endTime - nowSec) : "";
+  else $("countdown").textContent = "⛔ Sale closed — the rocket has landed.";
+}
+
+// ---------- wallet ----------
+let provider = null, account = null;
+async function loadWC() {
+  for (const u of ["https://unpkg.com/@walletconnect/ethereum-provider@2.21.0/dist/index.umd.js", "https://cdn.jsdelivr.net/npm/@walletconnect/ethereum-provider@2.21.0/dist/index.umd.js"]) {
+    try { await new Promise((res, rej) => { const s = document.createElement("script"); s.src = u; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); if (window["@walletconnect/ethereum-provider"]) return true; } catch (e) {}
+  }
+  return false;
+}
+$("connectBtn").onclick = async () => {
+  const msg = $("walletMsg");
+  try {
+    if (window.ethereum) { provider = window.ethereum; }
+    else {
+      msg.textContent = "Opening WalletConnect…";
+      if (!await loadWC()) throw new Error("WalletConnect failed to load");
+      provider = await window["@walletconnect/ethereum-provider"].EthereumProvider.init({ projectId: WC_PROJECT_ID, chains: [56], showQrModal: true });
+    }
+    const accs = await provider.request({ method: "eth_requestAccounts" });
+    account = accs[0];
+    await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0x38" }] }).catch(() => {});
+    $("acct").textContent = account;
+    msg.className = "msg ok"; msg.textContent = "Connected.";
+    $("myRef").value = SITE + "?ref=" + account;
+    refreshMine();
+  } catch (e) { msg.className = "msg err"; msg.textContent = e.message || String(e); }
+};
+async function sendTx(data, valueHex) {
+  if (!provider || !account) throw new Error("Connect your wallet first (panel 1).");
+  await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0x38" }] }).catch(() => {});
+  return provider.request({ method: "eth_sendTransaction", params: [{ from: account, to: CONTRACT, value: valueHex || "0x0", data }] });
+}
+async function refreshMine() {
+  if (!account) return;
+  const wi = await rpcCall(SEL.walletInfo + padAddr(account));
+  if (wi) {
+    const shares = word(wi, 2) / SHARE_WEI;
+    $("myState").textContent = "My status: holding " + shares.toString() + " shares (" +
+      (word(wi, 2) / 10n ** 18n).toString() + " BOOST) · Lane A" + (word(wi, 0) === 1n ? " ✓ claimed" : " open") +
+      " · Lane B" + (word(wi, 1) === 1n ? " ✓ claimed" : " open");
+  }
+  const rg = await rpcCall(SEL.registered + padAddr(account));
+  if (rg) $("regState").textContent = word(rg, 0) === 1n
+    ? "✅ This wallet is registered on the waitlist — you board at 19:30 WIB."
+    : "This wallet is not registered yet.";
+  const ru = await rpcCall(SEL.referralUnits + padAddr(account));
+  const rm = await rpcCall(SEL.referralMinted + padAddr(account));
+  if (ru && rm) $("refStats").textContent = "My referrals: " + word(ru, 0).toString() + " paid shares referred · " + word(rm, 0).toString() + " free shares earned.";
+}
+
+// ---------- waitlist ----------
+$("regBtn").onclick = async () => {
+  const msg = $("regMsg");
+  try {
+    msg.className = "msg"; msg.textContent = "Sending registration…";
+    const h = await sendTx(SEL.register);
+    msg.className = "msg ok"; msg.textContent = "Registered! Tx " + h;
+    refreshMine();
+  } catch (e) { msg.className = "msg err"; msg.textContent = e.message || String(e); }
+};
+
+// ---------- permits + free claims ----------
+const permits = {};
+async function getPermit(lane) {
+  const msg = $(lane === 1 ? "msgA" : "msgB");
+  const url = $(lane === 1 ? "tweetA" : "tweetB").value.trim();
+  if (!account) { msg.className = "msg err"; msg.textContent = "Connect your wallet first."; return; }
+  if (!url) { msg.className = "msg err"; msg.textContent = "Paste your post link first."; return; }
+  msg.className = "msg"; msg.textContent = "The gate is verifying your post and eligibility…";
+  try {
+    const r = await fetch(PERMIT_URL, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ wallet: account, tweetUrl: url, lane }) });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || ("gate error " + r.status));
+    permits[lane] = j;
+    $(lane === 1 ? "claimA" : "claimB").disabled = false;
+    msg.className = "msg ok"; msg.textContent = "Permit received — now press ③ to claim.";
+  } catch (e) { msg.className = "msg err"; msg.textContent = e.message || String(e); }
+}
+async function claim(lane) {
+  const msg = $(lane === 1 ? "msgA" : "msgB");
+  const p = permits[lane];
+  if (!p) { msg.className = "msg err"; msg.textContent = "Get a permit first (step ②)."; return; }
+  try {
+    msg.className = "msg"; msg.textContent = "Claiming on-chain…";
+    const sig = p.signature.replace(/^0x/, "");
+    const data = (lane === 1 ? SEL.claimAgent : SEL.claimX) + pad32(p.handle) + pad32(p.deadline.toString(16)) +
+      pad32("60") + pad32("41") + sig.padEnd(192, "0");
+    const h = await sendTx(data);
+    msg.className = "msg ok"; msg.textContent = "Claimed! Tx " + h;
+    permits[lane] = null;
+    $(lane === 1 ? "claimA" : "claimB").disabled = true;
+    refresh(); refreshMine();
+  } catch (e) { msg.className = "msg err"; msg.textContent = e.message || String(e); }
+}
+$("permitA").onclick = () => getPermit(1);
+$("permitB").onclick = () => getPermit(2);
+$("claimA").onclick = () => claim(1);
+$("claimB").onclick = () => claim(2);
+
+// ---------- buy ----------
+let lastQuote = null;
+async function updateQuote() {
+  const n = Math.max(1, Math.min(20, parseInt($("buyQty").value || "1", 10)));
+  const res = await rpcCall(SEL.quote + pad32(n.toString(16)));
+  if (res) { lastQuote = word(res, 0); $("buyQuote").value = "quote: " + fmtBNB(lastQuote) + " for " + n + " share" + (n > 1 ? "s" : ""); }
+}
+$("buyQty").addEventListener("input", updateQuote);
+$("buyBtn").onclick = async () => {
+  const msg = $("buyMsg");
+  try {
+    if (lastQuote === null) await updateQuote();
+    const n = Math.max(1, Math.min(20, parseInt($("buyQty").value || "1", 10)));
+    const ref = ($("refIn").value || "").trim();
+    const refAddr = /^0x[0-9a-fA-F]{40}$/.test(ref) ? ref : "0x0000000000000000000000000000000000000000";
+    msg.className = "msg"; msg.textContent = "Sending buy…";
+    const h = await sendTx(SEL.buy + pad32(n.toString(16)) + padAddr(refAddr), "0x" + lastQuote.toString(16));
+    msg.className = "msg ok"; msg.textContent = "Bought " + n + " share(s)! Tx " + h;
+    refresh(); refreshMine();
+  } catch (e) { msg.className = "msg err"; msg.textContent = e.message || String(e); }
+};
+
+// ---------- referrals ----------
+$("copyRef").onclick = async () => {
+  try { await navigator.clipboard.writeText($("myRef").value); $("copyRef").textContent = "Copied ✓"; setTimeout(() => $("copyRef").textContent = "Copy", 1600); } catch (e) {}
+};
+(async () => {
+  const ref = new URLSearchParams(location.search).get("ref");
+  if (ref && /^0x[0-9a-fA-F]{40}$/.test(ref)) $("refIn").value = ref;
+  try {
+    const r = await fetch("referrers.json", { cache: "no-store" });
+    const rows = await r.json();
+    if (Array.isArray(rows) && rows.length) {
+      $("refBoard").innerHTML = rows.map(x =>
+        `<tr><td class="mono">${x.address}</td><td>${x.units}</td><td>${x.rewards}</td></tr>`).join("");
+    }
+  } catch (e) { /* board stays empty */ }
+})();
+
+// ---------- agent prompt ----------
+$("copyPrompt").onclick = async () => {
+  try { await navigator.clipboard.writeText($("agentPrompt").value); $("msgPrompt").textContent = "Copied ✓"; }
+  catch (e) { $("agentPrompt").select(); document.execCommand("copy"); $("msgPrompt").textContent = "Copied ✓"; }
+};
+
+$("jsState").textContent = "JS ready.";
+refresh();
+setInterval(refresh, 5000);
+setInterval(tick, 1000);
+</script>
+</body>
+</html>

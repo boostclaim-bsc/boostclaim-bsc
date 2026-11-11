@@ -1,0 +1,26 @@
+# BoostClaim (BOOST)
+
+> Staircase-sale token on BNB Chain (chainId 56). 1,000 shares of 1,000,000
+> BOOST each (1B total supply locked in the contract). 100 shares free for
+> Agent ID holders, 100 free for verified X accounts — both gated by an
+> EIP-712 permit issued after a public X post (share-first). 800 paid shares
+> climb a staircase: 0.0005 BNB base, +0.00005 BNB (+10% of base) for every
+> 10 shares distributed across all paths, capped at 0.01 BNB. Referral: 1
+> free share per 10 paid shares routed through a referrer. No admin
+> functions; proceeds go straight to the treasury.
+
+Site: https://boostclaim-bsc.github.io/boostclaim-bsc/
+Contract: 0xc6D5961Ab6499Ce214f210e29d36C3e04040770e
+Permit gate: POST https://permit-worker.reuniakbarpunk212.workers.dev/boostclaim/permit
+
+Schedule (Asia/Jakarta): waitlist registration (Agent ID wallets, register(),
+free) open until early boarding Wed 2026-11-11 19:30 WIB; registered wallets
+board 30 minutes early at 19:30 WIB; public sale opens Wed 2026-11-11
+20:00 WIB; sale ends Sat 2026-11-14 20:00 WIB.
+
+Agent instructions: https://boostclaim-bsc.github.io/boostclaim-bsc/skill.md
+Quickstart: https://boostclaim-bsc.github.io/boostclaim-bsc/agent.md
+
+Key calls: register() 0x1aa3a008 · claimAgent(bytes32,uint256,bytes)
+0x031aa545 · claimX(bytes32,uint256,bytes) 0x5459f739 · buy(uint256,address)
+0x7deb6025 · quote(uint256) 0xed1bd76c · status() 0x200d2ed2
