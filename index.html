@@ -34,6 +34,29 @@
   @keyframes flick{from{transform:scaleY(.82)}to{transform:scaleY(1.18)}}
   .pad{position:absolute;left:0;right:0;bottom:0;height:26px;background:linear-gradient(180deg,#2a3168,#171d47);
     border-top:2px solid rgba(255,179,71,.55);text-align:center;font-size:11px;color:var(--dim);padding-top:5px;letter-spacing:.2em}
+  /* ------- flying hero rocket (left -> right) ------- */
+  .rocket svg{animation:svgBob 2.6s ease-in-out infinite alternate}
+  @keyframes svgBob{from{transform:translateY(-3px)}to{transform:translateY(3px)}}
+  .flyer{position:absolute;top:9%;left:0;width:clamp(180px,36%,300px);z-index:2;pointer-events:none;will-change:transform;
+    animation:flyAcross 13s linear infinite}
+  @keyframes flyAcross{0%{transform:translateX(-360px)}58%{transform:translateX(1150px)}100%{transform:translateX(1150px)}}
+  .flybob{position:relative;animation:bobTilt 1.8s ease-in-out infinite alternate}
+  @keyframes bobTilt{from{transform:translateY(-8px) rotate(-3deg)}to{transform:translateY(8px) rotate(2.5deg)}}
+  .flybob img{width:100%;display:block;border-radius:22px;
+    filter:drop-shadow(0 0 26px rgba(255,150,60,.45));
+    -webkit-mask-image:radial-gradient(ellipse 92% 92% at 50% 50%,#000 62%,transparent 98%);
+    mask-image:radial-gradient(ellipse 92% 92% at 50% 50%,#000 62%,transparent 98%)}
+  .spark{position:absolute;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,#ffe9a8 0%,#ffb347 45%,rgba(255,120,60,0) 72%);
+    animation:sparkTrail .85s linear infinite}
+  .spark.s1{width:16px;height:16px;left:4%;bottom:16%}
+  .spark.s2{width:11px;height:11px;left:10%;bottom:6%;animation-delay:.18s}
+  .spark.s3{width:20px;height:20px;left:-2%;bottom:26%;animation-delay:.36s}
+  .spark.s4{width:9px;height:9px;left:14%;bottom:22%;animation-delay:.54s}
+  .spark.s5{width:13px;height:13px;left:7%;bottom:34%;animation-delay:.68s}
+  @keyframes sparkTrail{from{transform:translate(0,0) scale(1);opacity:.95}to{transform:translate(-72px,16px) scale(.25);opacity:0}}
+  #tpStep{color:var(--org2);text-shadow:0 0 16px rgba(255,179,71,.75)}
+  @media (prefers-reduced-motion:reduce){ .flyer,.flybob,.rocket svg,.spark{animation:none} }
   .altbox{width:118px;border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:14px 10px;text-align:center;
     display:flex;flex-direction:column;justify-content:center;gap:4px}
   .altbox .big{font-size:30px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
@@ -60,7 +83,8 @@
   .flow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
   .flow>*{flex:1;min-width:150px}
   .bar{height:14px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;margin:8px 0}
-  .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--org),#ffd23f);width:0%;transition:width .8s ease}
+  .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--org),#ffd23f);width:0%;transition:width .8s ease;
+    box-shadow:0 0 12px rgba(255,180,60,.85),0 0 3px rgba(255,210,63,.9)}
   .steps{display:flex;gap:14px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
   .steps div b{display:block;font-size:22px;color:#fff}
   .steps div span{font-size:12px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
@@ -106,6 +130,10 @@
         <text x="50" y="134" text-anchor="middle" font-size="14" font-weight="900" fill="#0d1440">BOOST</text>
       </svg>
     </div>
+    <div class="flyer" aria-hidden="true"><div class="flybob">
+      <span class="spark s1"></span><span class="spark s2"></span><span class="spark s3"></span><span class="spark s4"></span><span class="spark s5"></span>
+      <img src="img/boostclaim-rocket.webp" alt="">
+    </div></div>
     <div class="pad">LAUNCH PAD · BNB CHAIN</div>
   </div>
   <div class="altbox">
